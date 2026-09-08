@@ -73,3 +73,12 @@ footer{border-top:1px solid rgba(199,166,110,.25);padding:25px 0 0;display:flex;
   h1{font-size:45px}.subtitle{font-size:19px}.lead{font-size:20px}.intro{gap:15px}.intro .panel-number,.section-heading .panel-number{font-size:11px}
   .cards{grid-template-columns:1fr}.card img,.card .placeholder{height:220px}footer{flex-direction:column}
 }
+
+/* === REAL DRAG & DROP === */
+.card{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;position:relative;cursor:grab}
+.card.dragging{opacity:.25;transform:scale(.97)}
+body.is-dragging{cursor:grabbing}
+.drag-ghost{position:fixed!important;z-index:99999!important;pointer-events:none!important;opacity:.96!important;transform:rotate(2deg) scale(1.04);box-shadow:0 20px 50px rgba(0,0,0,.55),0 0 0 2px rgba(199,166,110,.65);transition:none!important}
+.drop-target{border-color:var(--gold)!important;transform:scale(1.035) translateY(-4px);box-shadow:0 0 0 3px rgba(199,166,110,.35),0 0 35px rgba(199,166,110,.2)!important}
+.drop-target:before{content:'ОТПУСТИТЕ ЗДЕСЬ';position:absolute;z-index:20;left:7px;right:7px;top:7px;padding:7px 3px;background:rgba(7,26,41,.94);border:1px solid var(--gold);color:var(--gold);text-align:center;font:11px Oswald,sans-serif;letter-spacing:.1em}
+.match-badge{position:absolute;z-index:10;left:7px;right:7px;bottom:48px;padding:6px 5px;background:rgba(7,26,41,.92);border:1px solid var(--gold);color:var(--gold);text-align:center;font:10px Oswald,sans-serif;letter-spacing:.06em;pointer-events:none}
