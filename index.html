@@ -49,7 +49,7 @@
           <div class="panel-number">02</div>
           <div>
             <h2>Ассоциативная геральдическая экспертиза</h2>
-            <p>Зажмите карточку и перетащите её на подходящий объект. На телефоне — удерживайте карточку пальцем.</p>
+            <p>Нажмите на портрет, затем на лебедя. Соединение появится между ними.</p>
           </div>
           <div class="status" id="status">0 / 0</div>
         </div>
@@ -60,7 +60,10 @@
             <div id="friends" class="cards"></div>
           </div>
 
-          <div class="connections-wrap"><div class="versus">VS</div></div>
+          <div class="connections-wrap">
+            <svg id="connections" class="connections" aria-hidden="true"></svg>
+            <div class="versus">VS</div>
+          </div>
 
           <div class="column">
             <div class="column-title">Образцы дворовой геральдики</div>
@@ -70,7 +73,7 @@
 
         <div class="legend">
           <span><i class="dot"></i> выбрано</span>
-          <span><i class="line"></i> экспертная связь</span>
+          <span><i class="dot"></i> сопоставление</span>
           <span>Можно менять решения до отправки.</span>
         </div>
       </section>
