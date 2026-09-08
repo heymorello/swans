@@ -1,199 +1,168 @@
-const friends = [
-  { id:"friend-01", name:"ДРУГ № 01", image:"assets/friends/friend-01.jpg" },
-  { id:"friend-02", name:"ДРУГ № 02", image:"assets/friends/friend-02.jpg" },
-  { id:"friend-03", name:"ДРУГ № 03", image:"assets/friends/friend-03.jpg" },
-  { id:"friend-04", name:"ДРУГ № 04", image:"assets/friends/friend-04.jpg" },
-  { id:"friend-05", name:"ДРУГ № 05", image:"assets/friends/friend-05.jpg" },
-  { id:"friend-06", name:"ДРУГ № 06", image:"assets/friends/friend-06.jpg" },
-  { id:"friend-07", name:"ДРУГ № 07", image:"assets/friends/friend-07.jpg" },
-  { id:"friend-08", name:"ДРУГ № 08", image:"assets/friends/friend-08.jpg" }
-];
+const friends = Array.from({length:8}, (_,i) => ({
+  id:`friend-${String(i+1).padStart(2,'0')}`,
+  name:`ДРУГ № ${String(i+1).padStart(2,'0')}`,
+  image:`assets/friends/friend-${String(i+1).padStart(2,'0')}.jpg`
+}));
 
-const swans = [
-  { id:"swan-01", name:"ЛЕБЕДЬ № 01", image:"assets/swans/swan-01.jpg" },
-  { id:"swan-02", name:"ЛЕБЕДЬ № 02", image:"assets/swans/swan-02.jpg" },
-  { id:"swan-03", name:"ЛЕБЕДЬ № 03", image:"assets/swans/swan-03.jpg" },
-  { id:"swan-04", name:"ЛЕБЕДЬ № 04", image:"assets/swans/swan-04.jpg" },
-  { id:"swan-05", name:"ЛЕБЕДЬ № 05", image:"assets/swans/swan-05.jpg" },
-  { id:"swan-06", name:"ЛЕБЕДЬ № 06", image:"assets/swans/swan-06.jpg" },
-  { id:"swan-07", name:"ЛЕБЕДЬ № 07", image:"assets/swans/swan-07.jpg" },
-  { id:"swan-08", name:"ЛЕБЕДЬ № 08", image:"assets/swans/swan-08.jpg" }
-];
+const swans = Array.from({length:8}, (_,i) => ({
+  id:`swan-${String(i+1).padStart(2,'0')}`,
+  name:`ЛЕБЕДЬ № ${String(i+1).padStart(2,'0')}`,
+  image:`assets/swans/swan-${String(i+1).padStart(2,'0')}.jpg`
+}));
 
-// friendId -> swanId
 const matches = new Map();
+let drag = null;
 let selectedFriend = null;
 let selectedSwan = null;
+const $ = s => document.querySelector(s);
 
-const $ = (s) => document.querySelector(s);
-const friendsEl = $("#friends");
-const swansEl = $("#swans");
-const svg = $("#connections");
-const statusEl = $("#status");
-const messageEl = $("#message");
-
-function card(item, type){
-  const div = document.createElement("button");
-  div.type = "button";
-  div.className = "card";
-  div.dataset.id = item.id;
-  div.dataset.type = type;
-  div.innerHTML = `
-    <div class="visual">${item.image
-      ? `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='<div class=&quot;placeholder&quot;>ВСТАВЬТЕ<br>ИЗОБРАЖЕНИЕ</div>'">`
-      : `<div class="placeholder">ВСТАВЬТЕ<br>ИЗОБРАЖЕНИЕ</div>`}
-    </div>
-    <div class="label">${item.name}</div>`;
-  div.addEventListener("click", () => select(type, item.id));
-  return div;
+function makeCard(item,type){
+  const el=document.createElement('div');
+  el.className='card';
+  el.dataset.id=item.id;
+  el.dataset.type=type;
+  el.innerHTML=`<div class="visual"><img src="${item.image}" alt="${item.name}"><div class="placeholder">ВСТАВЬТЕ<br>ИЗОБРАЖЕНИЕ</div></div><div class="label">${item.name}</div>`;
+  const img=el.querySelector('img');
+  img.addEventListener('error',()=>{img.style.display='none';});
+  el.addEventListener('pointerdown',startDrag);
+  el.addEventListener('pointermove',moveDrag);
+  el.addEventListener('pointerup',endDrag);
+  el.addEventListener('pointercancel',cancelDrag);
+  el.addEventListener('dragstart',e=>e.preventDefault());
+  return el;
 }
 
 function render(){
-  friendsEl.innerHTML = ""; swansEl.innerHTML = "";
-  friends.forEach(x => friendsEl.appendChild(card(x,"friend")));
-  swans.forEach(x => swansEl.appendChild(card(x,"swan")));
-  updateCards();
-  updateStatus();
-  requestAnimationFrame(drawLines);
+  $('#friends').replaceChildren(...friends.map(x=>makeCard(x,'friend')));
+  $('#swans').replaceChildren(...swans.map(x=>makeCard(x,'swan')));
+  updateCards(); updateStatus();
+}
+
+function startDrag(e){
+  if(e.pointerType==='mouse' && e.button!==0) return;
+  const source=e.currentTarget;
+  drag={pointerId:e.pointerId,type:source.dataset.type,id:source.dataset.id,source,ghost:null,target:null,moved:false};
+  source.setPointerCapture?.(e.pointerId);
+  drag.ghost=source.cloneNode(true);
+  drag.ghost.classList.add('drag-ghost');
+  drag.ghost.style.width=`${source.getBoundingClientRect().width}px`;
+  drag.ghost.style.height=`${source.getBoundingClientRect().height}px`;
+  document.body.appendChild(drag.ghost);
+  source.classList.add('dragging');
+  document.body.classList.add('is-dragging');
+  moveGhost(e);
+  e.preventDefault();
+}
+
+function moveGhost(e){
+  if(!drag?.ghost) return;
+  const r=drag.source.getBoundingClientRect();
+  drag.ghost.style.left=`${e.clientX-r.width/2}px`;
+  drag.ghost.style.top=`${e.clientY-r.height/2}px`;
+}
+
+function moveDrag(e){
+  if(!drag || e.pointerId!==drag.pointerId) return;
+  drag.moved=true; moveGhost(e);
+  drag.ghost.style.display='none';
+  const under=document.elementFromPoint(e.clientX,e.clientY);
+  drag.ghost.style.display='';
+  document.querySelectorAll('.drop-target').forEach(x=>x.classList.remove('drop-target'));
+  drag.target=null;
+  const target=under?.closest('.card');
+  if(target && target!==drag.source && target.dataset.type!==drag.type){
+    drag.target=target;
+    target.classList.add('drop-target');
+  }
+  e.preventDefault();
+}
+
+function endDrag(e){
+  if(!drag || e.pointerId!==drag.pointerId) return;
+  const state=drag;
+  if(state.target){
+    const friendId=state.type==='friend'?state.id:state.target.dataset.id;
+    const swanId=state.type==='swan'?state.id:state.target.dataset.id;
+    assign(friendId,swanId);
+  } else if(!state.moved){
+    // Tap/click fallback.
+    select(state.type,state.id);
+  }
+  cleanupDrag(); updateCards(); updateStatus();
+  e.preventDefault();
+}
+
+function cancelDrag(){ cleanupDrag(); updateCards(); }
+function cleanupDrag(){
+  if(!drag) return;
+  drag.source.classList.remove('dragging');
+  document.querySelectorAll('.drop-target').forEach(x=>x.classList.remove('drop-target'));
+  drag.ghost?.remove();
+  document.body.classList.remove('is-dragging');
+  drag=null;
 }
 
 function select(type,id){
-  if(type==="friend"){
-    selectedFriend = selectedFriend === id ? null : id;
-  } else {
-    selectedSwan = selectedSwan === id ? null : id;
-  }
-
-  if(selectedFriend && selectedSwan){
-    assign(selectedFriend, selectedSwan);
-    selectedFriend = null;
-    selectedSwan = null;
-  }
-  updateCards();
-  drawLines();
-  updateStatus();
+  if(type==='friend') selectedFriend=selectedFriend===id?null:id;
+  else selectedSwan=selectedSwan===id?null:id;
+  if(selectedFriend && selectedSwan){assign(selectedFriend,selectedSwan);selectedFriend=null;selectedSwan=null;}
+  updateCards(); updateStatus();
 }
 
 function assign(friendId,swanId){
-  if(APP_CONFIG.ONE_TO_ONE){
-    // Remove previous swan assigned to this friend.
-    matches.delete(friendId);
-    // If this swan already belongs to someone else, remove that old link.
-    for(const [f,s] of matches.entries()){
-      if(s===swanId) matches.delete(f);
-    }
-  }
   matches.set(friendId,swanId);
+  if(APP_CONFIG.ONE_TO_ONE){
+    for(const [f,s] of [...matches]) if(f!==friendId && s===swanId) matches.delete(f);
+  }
 }
 
 function updateCards(){
-  document.querySelectorAll(".card").forEach(el => {
-    const {id,type} = el.dataset;
-    el.classList.toggle("selected",
-      (type==="friend" && selectedFriend===id) ||
-      (type==="swan" && selectedSwan===id)
-    );
-    el.classList.toggle("matched",
-      type==="friend" ? matches.has(id) : [...matches.values()].includes(id)
-    );
+  document.querySelectorAll('.card').forEach(el=>{
+    const id=el.dataset.id,type=el.dataset.type;
+    el.classList.toggle('selected',(type==='friend'&&selectedFriend===id)||(type==='swan'&&selectedSwan===id));
+    el.classList.toggle('matched',type==='friend'?matches.has(id):[...matches.values()].includes(id));
+    const badge=el.querySelector('.match-badge'); badge?.remove();
+    let other=null;
+    if(type==='friend' && matches.has(id)) other=swans.find(s=>s.id===matches.get(id));
+    if(type==='swan') { const pair=[...matches.entries()].find(([,s])=>s===id); if(pair) other=friends.find(f=>f.id===pair[0]); }
+    if(other){const b=document.createElement('div');b.className='match-badge';b.textContent=other.name;b.title='Перетащите карточку ещё раз, чтобы изменить';el.appendChild(b);}
   });
 }
 
-function drawLines(){
-  svg.innerHTML="";
-  const board = document.querySelector(".matching-board");
-  if(!board) return;
-  const boardRect = board.getBoundingClientRect();
-  const leftCards = [...friendsEl.querySelectorAll(".card")];
-  const rightCards = [...swansEl.querySelectorAll(".card")];
-
-  for(const [friendId,swanId] of matches.entries()){
-    const a = leftCards.find(x=>x.dataset.id===friendId);
-    const b = rightCards.find(x=>x.dataset.id===swanId);
-    if(!a || !b) continue;
-    const ar=a.getBoundingClientRect(), br=b.getBoundingClientRect();
-    const x1=ar.right-boardRect.left, y1=ar.top+ar.height/2-boardRect.top;
-    const x2=br.left-boardRect.left, y2=br.top+br.height/2-boardRect.top;
-    const dx=Math.max(25,(x2-x1)*.35);
-    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
-    path.setAttribute("d",`M ${x1} ${y1} C ${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`);
-    path.setAttribute("class","connection-line");
-    svg.appendChild(path);
-  }
-}
-
-function updateStatus(){
-  statusEl.textContent = `${matches.size} / ${friends.length}`;
-}
+function updateStatus(){ $('#status').textContent=`${matches.size} / ${friends.length}`; }
 
 function getPayload(){
   return {
-    participant: ($("#participantName").value || "Анонимный эксперт").trim().slice(0,40),
-    submittedAt: new Date().toISOString(),
-    matches: friends.map(f => ({
-      friendId:f.id,
-      friendName:f.name,
-      swanId:matches.get(f.id) || null,
-      swanName:swans.find(s=>s.id===matches.get(f.id))?.name || null
-    }))
+    participant:($('#participantName').value||'Анонимный эксперт').trim().slice(0,40),
+    submittedAt:new Date().toISOString(),
+    matches:friends.map(f=>({friendId:f.id,friendName:f.name,swanId:matches.get(f.id)||null,swanName:swans.find(s=>s.id===matches.get(f.id))?.name||null}))
   };
 }
 
 async function submit(){
-  messageEl.textContent="";
-  const name=($("#participantName").value||"").trim();
-  if(!name){ messageEl.textContent="Сначала представьтесь экспертизе."; $("#participantName").focus(); return; }
-  if(matches.size < friends.length){
-    messageEl.textContent=`Экспертиза не завершена: соединено ${matches.size} из ${friends.length}.`;
-    return;
-  }
-
-  const btn=$("#submitBtn");
-  btn.disabled=true; btn.textContent="ФИКСИРУЕМ ВЕРДИКТ…";
+  const msg=$('#message'), btn=$('#submitBtn');
+  msg.textContent='';
+  if(!($('#participantName').value||'').trim()){msg.textContent='Сначала представьтесь экспертизе.';$('#participantName').focus();return;}
+  if(matches.size<friends.length){msg.textContent=`Соединено ${matches.size} из ${friends.length}. Перетащите оставшиеся карточки.`;return;}
+  btn.disabled=true; btn.textContent='ФИКСИРУЕМ ВЕРДИКТ…';
   const payload=getPayload();
-
   try{
-    const endpoint=APP_CONFIG.STATS_ENDPOINT;
-    if(!endpoint || endpoint.includes("PASTE_YOUR")){
-      // Demo mode: keep the result locally so the interaction can still be tested.
-      localStorage.setItem("lastVerdict",JSON.stringify(payload));
-      showThanks("Демо-режим: URL статистики пока не подключён.");
-      return;
+    if(!APP_CONFIG.STATS_ENDPOINT || APP_CONFIG.STATS_ENDPOINT.includes('PASTE_YOUR')){
+      localStorage.setItem('lastVerdict',JSON.stringify(payload));
+      showThanks('Демо-режим: URL статистики ещё не подключён.'); return;
     }
-
-    await fetch(endpoint,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify(payload)
-    });
-
+    await fetch(APP_CONFIG.STATS_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
     showThanks();
-  }catch(err){
-    console.error(err);
-    messageEl.textContent="Не удалось отправить результат. Проверьте интернет и попробуйте ещё раз.";
-    btn.disabled=false; btn.innerHTML='ПРЕДЪЯВИТЬ ВЕРДИКТ <span>→</span>';
-  }
+  }catch(err){msg.textContent='Не удалось отправить результат. Попробуйте ещё раз.';btn.disabled=false;btn.innerHTML='ПРЕДЪЯВИТЬ ВЕРДИКТ <span>→</span>';}
 }
 
-function showThanks(extra=""){
-  $("#matchingPanel").classList.add("hidden");
-  $(".intro").classList.add("hidden");
-  $(".submit-panel").classList.add("hidden");
-  $("#thanks").classList.remove("hidden");
-  if(extra) $("#thanks .small").textContent=extra;
-  window.scrollTo({top:0,behavior:"smooth"});
+function showThanks(extra=''){
+  $('#matchingPanel').classList.add('hidden');$('.intro').classList.add('hidden');$('.submit-panel').classList.add('hidden');$('#thanks').classList.remove('hidden');
+  if(extra) $('#thanks .small').textContent=extra;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-$("#submitBtn").addEventListener("click",submit);
-$("#againBtn").addEventListener("click",()=>{
-  matches.clear(); selectedFriend=null; selectedSwan=null;
-  $("#thanks").classList.add("hidden");
-  $(".intro").classList.remove("hidden");
-  $(".submit-panel").classList.remove("hidden");
-  $("#matchingPanel").classList.remove("hidden");
-  render();
-});
-
-window.addEventListener("resize",drawLines);
+$('#submitBtn').addEventListener('click',submit);
+$('#againBtn').addEventListener('click',()=>{matches.clear();selectedFriend=null;selectedSwan=null;$('#thanks').classList.add('hidden');$('.intro').classList.remove('hidden');$('.submit-panel').classList.remove('hidden');$('#matchingPanel').classList.remove('hidden');$('#submitBtn').disabled=false;$('#submitBtn').innerHTML='ПРЕДЪЯВИТЬ ВЕРДИКТ <span>→</span>';render();});
+window.addEventListener('resize',()=>{});
 render();
