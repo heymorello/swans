@@ -10,14 +10,14 @@ const friends = [
 ];
 
 const swans = [
-  {id:'swan-01', name:'Лебедь 1', image:'assets/swans/swan-01.png'},
-  {id:'swan-02', name:'Лебедь 2', image:'assets/swans/swan-02.png'},
-  {id:'swan-03', name:'Лебедь 3', image:'assets/swans/swan-03.png'},
-  {id:'swan-04', name:'Лебедь 4', image:'assets/swans/swan-04.png'},
-  {id:'swan-05', name:'Лебедь 5', image:'assets/swans/swan-05.png'},
-  {id:'swan-06', name:'Лебедь 6', image:'assets/swans/swan-06.png'},
-  {id:'swan-07', name:'Лебедь 7', image:'assets/swans/swan-07.png'},
-  {id:'swan-08', name:'Лебедь 8', image:'assets/swans/swan-08.png'}
+  {id:'swan-01', name:'Птозный Эдгар', image:'assets/swans/swan-01.png'},
+  {id:'swan-02', name:'Тяжёлый люкс', image:'assets/swans/swan-02.png'},
+  {id:'swan-03', name:'Чунявый Бенедикт', image:'assets/swans/swan-03.png'},
+  {id:'swan-04', name:'Пацан и пацанесса', image:'assets/swans/swan-04.png'},
+  {id:'swan-05', name:'Лесные кадаврики', image:'assets/swans/swan-05.png'},
+  {id:'swan-06', name:'Маня Понич', image:'assets/swans/swan-06.png'},
+  {id:'swan-07', name:'Сатор Арепыч', image:'assets/swans/swan-07.png'},
+  {id:'swan-08', name:'Ароматные голуби', image:'assets/swans/swan-08.png'}
 ];
 const matches=new Map(); let selectedFriend=null, selectedSwan=null, drag=null;
 const $=s=>document.querySelector(s), friendsEl=$('#friends'), swansEl=$('#swans'), statusEl=$('#status'), messageEl=$('#message');
