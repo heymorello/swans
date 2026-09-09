@@ -1,12 +1,12 @@
 const friends = [
-  {id:'friend-01', name:'Эмберли и Джулия Шрив-Стиверсон', image:'assets/friends/friend-01.png'},
+  {id:'friend-01', name:'Эмберли и Джулия', image:'assets/friends/friend-01.png'},
   {id:'friend-02', name:'Лита и Уилл Джефферсон', image:'assets/friends/friend-02.png'},
   {id:'friend-03', name:'Владиона и Джаред Крин', image:'assets/friends/friend-03.png'},
   {id:'friend-04', name:'Кори и Белл Сезенс', image:'assets/friends/friend-04.png'},
   {id:'friend-05', name:'Лиария Спраут и Альт', image:'assets/friends/friend-05.png'},
   {id:'friend-06', name:'Гюго, Даррен и Грейс', image:'assets/friends/friend-06.png'},
-  {id:'friend-07', name:'Энни Мур и Женевьева Ханнэм', image:'assets/friends/friend-07.png'},
-  {id:'friend-08', name:'Хаттори Райто и Аделин Дели-Шефер', image:'assets/friends/friend-08.png'}
+  {id:'friend-07', name:'Энни и Женевьева', image:'assets/friends/friend-07.png'},
+  {id:'friend-08', name:'Райто и Аделин Хаттори', image:'assets/friends/friend-08.png'}
 ];
 
 const swans = [
