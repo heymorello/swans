@@ -12,6 +12,6 @@
   5. Скопируйте URL /exec сюда.
 */
 const APP_CONFIG = {
-  STATS_ENDPOINT: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE",
+  STATS_ENDPOINT: "https://script.google.com/macros/s/AKfycbwvWGB4CTHR9h6jeouvnM6zcWs16EUWFR4aVyIqEHYSW0g7vtSU0dnZLbpaZ4TbQsY_Dg/exec",
   ONE_TO_ONE: true
 };
