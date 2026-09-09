@@ -1,5 +1,24 @@
-const friends = Array.from({length:8},(_,i)=>({id:`friend-${String(i+1).padStart(2,'0')}`,name:`ДРУГ № ${String(i+1).padStart(2,'0')}`,image:`assets/friends/friend-${String(i+1).padStart(2,'0')}.png`}));
-const swans = Array.from({length:8},(_,i)=>({id:`swan-${String(i+1).padStart(2,'0')}`,name:`ЛЕБЕДЬ № ${String(i+1).padStart(2,'0')}`,image:`assets/swans/swan-${String(i+1).padStart(2,'0')}.png`}));
+const friends = [
+  {id:'friend-01', name:'Эмберли и Джулия Шрив-Стиверсон', image:'assets/friends/friend-01.png'},
+  {id:'friend-02', name:'Лита и Уилл Джефферсон', image:'assets/friends/friend-02.png'},
+  {id:'friend-03', name:'Владиона и Джаред Крин', image:'assets/friends/friend-03.png'},
+  {id:'friend-04', name:'Кори и Белл Сезенс', image:'assets/friends/friend-04.png'},
+  {id:'friend-05', name:'Лиария Спраут и Альт', image:'assets/friends/friend-05.png'},
+  {id:'friend-06', name:'Гюго, Даррен и Грейс', image:'assets/friends/friend-06.png'},
+  {id:'friend-07', name:'Энни Мур и Женевьева Ханнэм', image:'assets/friends/friend-07.png'},
+  {id:'friend-08', name:'Хаттори Райто и Аделин Дели-Шефер', image:'assets/friends/friend-08.png'}
+];
+
+const swans = [
+  {id:'swan-01', name:'Лебедь 1', image:'assets/swans/swan-01.png'},
+  {id:'swan-02', name:'Лебедь 2', image:'assets/swans/swan-02.png'},
+  {id:'swan-03', name:'Лебедь 3', image:'assets/swans/swan-03.png'},
+  {id:'swan-04', name:'Лебедь 4', image:'assets/swans/swan-04.png'},
+  {id:'swan-05', name:'Лебедь 5', image:'assets/swans/swan-05.png'},
+  {id:'swan-06', name:'Лебедь 6', image:'assets/swans/swan-06.png'},
+  {id:'swan-07', name:'Лебедь 7', image:'assets/swans/swan-07.png'},
+  {id:'swan-08', name:'Лебедь 8', image:'assets/swans/swan-08.png'}
+];
 const matches=new Map(); let selectedFriend=null, selectedSwan=null, drag=null;
 const $=s=>document.querySelector(s), friendsEl=$('#friends'), swansEl=$('#swans'), statusEl=$('#status'), messageEl=$('#message');
 function card(item,type){
