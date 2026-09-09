@@ -38,5 +38,16 @@ function moveDrag(e){if(!drag)return;e.preventDefault();if(!drag.moved){drag.mov
 function endDrag(e){if(!drag)return;const d=drag;window.removeEventListener('pointermove',moveDrag);document.body.classList.remove('is-dragging');d.el.classList.remove('dragging');document.querySelectorAll('.drop-target').forEach(x=>x.classList.remove('drop-target'));const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.card');if(d.moved&&target&&target!==d.el&&target.dataset.type!==d.type){const f=d.type==='friend'?d.id:target.dataset.id;const s=d.type==='swan'?d.id:target.dataset.id;assign(f,s)}d.ghost?.remove();drag=null}
 function getPayload(){return{participant:($('#participantName').value||'Анонимный эксперт').trim().slice(0,40),submittedAt:new Date().toISOString(),matches:friends.map(f=>{const s=matches.get(f.id);return{friendId:f.id,friendName:f.name,swanId:s||null,swanName:swans.find(x=>x.id===s)?.name||null}})}}
 async function submit(){messageEl.textContent='';const name=($('#participantName').value||'').trim();if(!name){messageEl.textContent='Сначала представьтесь экспертизе.';$('#participantName').focus();return}if(matches.size<friends.length){messageEl.textContent=`Экспертиза не завершена: соединено ${matches.size} из ${friends.length}.`;return}const btn=$('#submitBtn');btn.disabled=true;btn.textContent='ФИКСИРУЕМ ВЕРДИКТ…';const payload=getPayload();try{const endpoint=APP_CONFIG.STATS_ENDPOINT;if(!endpoint||endpoint.includes('PASTE_YOUR')){localStorage.setItem('lastVerdict',JSON.stringify(payload));showThanks('Демо-режим: URL статистики пока не подключён.');return}await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});showThanks()}catch(err){console.error(err);messageEl.textContent='Не удалось отправить результат. Проверьте интернет и попробуйте ещё раз.';btn.disabled=false;btn.innerHTML='ПРЕДЪЯВИТЬ ВЕРДИКТ <span>→</span>'}}
-function showThanks(extra=''){$('#matchingPanel').classList.add('hidden');$('.intro').classList.add('hidden');$('.submit-panel').classList.add('hidden');$('#thanks').classList.remove('hidden');if(extra)$('#thanks .small').textContent=extra;window.scrollTo({top:0,behavior:'smooth'})}
-$('#submitBtn').addEventListener('click',submit);$('#againBtn').addEventListener('click',()=>{matches.clear();selectedFriend=selectedSwan=null;$('#thanks').classList.add('hidden');$('.intro').classList.remove('hidden');$('.submit-panel').classList.remove('hidden');$('#matchingPanel').classList.remove('hidden');render()});render();
+function showThanks(extra=''){
+  $('#matchingPanel').classList.add('hidden');
+  $('.intro').classList.add('hidden');
+  $('.submit-panel').classList.add('hidden');
+  $('#thanks').classList.remove('hidden');
+
+  if(extra) $('#thanks .small').textContent=extra;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('#submitBtn').addEventListener('click',submit);
+render();
