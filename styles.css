@@ -42,7 +42,7 @@ h2{font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:500;letter
 .section-heading>div:nth-child(2){flex:1}.section-heading p{margin:0;color:#b7a681;font-size:17px}.status{font-family:Oswald,sans-serif;color:var(--gold);font-size:15px;letter-spacing:.12em;white-space:nowrap}
 .matching-board{display:grid;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);gap:22px;position:relative}
 .column-title{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.13em;color:var(--gold);font-size:13px;border-bottom:1px solid rgba(199,166,110,.3);padding-bottom:10px;margin-bottom:16px}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .card{
   position:relative;border:1px solid rgba(199,166,110,.4);background:#091f2e;
   cursor:pointer;transition:.2s ease;overflow:hidden;min-height:220px;
@@ -81,4 +81,4 @@ body.is-dragging{cursor:grabbing}
 .drop-target:before{content:'ОТПУСТИТЕ ЗДЕСЬ';position:absolute;z-index:20;left:7px;right:7px;top:7px;padding:7px 3px;background:rgba(7,26,41,.94);border:1px solid var(--gold);color:var(--gold);text-align:center;font:11px Oswald,sans-serif;letter-spacing:.1em}
 .match-badge{position:absolute;z-index:10;left:7px;right:7px;bottom:48px;padding:6px 5px;background:rgba(7,26,41,.92);border:1px solid var(--gold);color:var(--gold);text-align:center;font:10px Oswald,sans-serif;letter-spacing:.06em;pointer-events:none}
 @media(max-width:900px){.matching-board{grid-template-columns:1fr;gap:30px}.connections-wrap{display:none}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{min-height:170px}.card img,.card .placeholder{height:125px}.card .label{font-size:11px;padding:8px 5px;min-height:34px}.match-badge{bottom:37px;font-size:8px;padding:4px 2px}}
+@media(max-width:520px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{min-height:170px}.card img,.card .placeholder{height:125px}.card .label{font-size:11px;padding:8px 5px;min-height:34px}.match-badge{bottom:37px;font-size:8px;padding:4px 2px}}

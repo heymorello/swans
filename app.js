@@ -1,5 +1,5 @@
-const friends = Array.from({length:8},(_,i)=>({id:`friend-${String(i+1).padStart(2,'0')}`,name:`ДРУГ № ${String(i+1).padStart(2,'0')}`,image:`assets/friends/friend-${String(i+1).padStart(2,'0')}.jpg`}));
-const swans = Array.from({length:8},(_,i)=>({id:`swan-${String(i+1).padStart(2,'0')}`,name:`ЛЕБЕДЬ № ${String(i+1).padStart(2,'0')}`,image:`assets/swans/swan-${String(i+1).padStart(2,'0')}.jpg`}));
+const friends = Array.from({length:8},(_,i)=>({id:`friend-${String(i+1).padStart(2,'0')}`,name:`ДРУГ № ${String(i+1).padStart(2,'0')}`,image:`assets/friends/friend-${String(i+1).padStart(2,'0')}.png`}));
+const swans = Array.from({length:8},(_,i)=>({id:`swan-${String(i+1).padStart(2,'0')}`,name:`ЛЕБЕДЬ № ${String(i+1).padStart(2,'0')}`,image:`assets/swans/swan-${String(i+1).padStart(2,'0')}.png`}));
 const matches=new Map(); let selectedFriend=null, selectedSwan=null, drag=null;
 const $=s=>document.querySelector(s), friendsEl=$('#friends'), swansEl=$('#swans'), statusEl=$('#status'), messageEl=$('#message');
 function card(item,type){
